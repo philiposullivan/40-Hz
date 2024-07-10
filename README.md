@@ -20,7 +20,7 @@
 ## Installation
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/40-Hz.git
+   git clone [https://github.com/yourusername/40-Hz.git](https://github.com/philiposullivan/40-Hz.git)
 2. Navigate to the project directory:
    cd 40-Hz
 3. Open `40hz.html` in your preferred web browser.
