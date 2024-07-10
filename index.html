@@ -6,6 +6,30 @@
     <title>40 Hz Brainwave</title>
     <link rel="icon" type="40-Hz-main/src/image/png" href="40-Hz-main/src/img/icon.png" sizes="32x32">
     <link rel="stylesheet" href="40-Hz-main/src/css/styles.css">
+    <style>
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+            padding: 0 5px;
+            transition: width 0.3s;
+            overflow: hidden;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .footer a:hover {
+            width: auto;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -25,6 +49,9 @@
     </main>
     <audio id="audio" src="40-Hz-main/src/audio/9a.ogg" preload="auto"></audio>
     <audio id="bellSound" src="40-Hz-main/src/audio/bell.ogg" preload="auto"></audio>
+    <div class="footer">
+        <a href="https://github.com/philiposullivan/40-Hz.git" id="sourceLink">Source</a>
+    </div>
     <script>
         window.addEventListener('load', () => {
             const playButton = document.getElementById('playButton');
@@ -33,6 +60,8 @@
             const bellSound = document.getElementById('bellSound');
             let isPlaying = false;
             let bellInterval;
+            let bellTimeout;
+            let bellCount = 1;
 
             playButton.addEventListener('click', () => {
                 if (isPlaying) {
@@ -41,6 +70,7 @@
                     playPauseIcon.src = '40-Hz-main/src/img/icon_play.png';
                     if (bellInterval) {
                         clearInterval(bellInterval);
+                        clearTimeout(bellTimeout);
                         bellInterval = null;
                     }
                 } else {
@@ -61,15 +91,14 @@
 
             const bellIcon = document.getElementById('bellIcon');
             const bellCounter = document.getElementById('bellCounter');
-            let bellCount = 1;
 
             bellIcon.addEventListener('click', () => {
-                bellSound.currentTime = 0;
-                bellSound.play();
-                
                 if (bellInterval) {
                     clearInterval(bellInterval);
                     bellCount = bellCount === 1 ? 5 : bellCount === 5 ? 10 : 1;
+                } else {
+                    bellSound.currentTime = 0;
+                    bellSound.play();
                 }
 
                 bellCounter.textContent = bellCount;
@@ -83,5 +112,3 @@
     </script>
 </body>
 </html>
-
-
