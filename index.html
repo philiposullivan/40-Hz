@@ -51,7 +51,7 @@
         </h1>
     </header>
         <img id="audioIcon" src="40-Hz-main/src/img/icon.jpg" alt="Audio Icon">
-        <audio id="audio" src="40-Hz-main/src/audio/new.ogg" preload="auto"></audio>
+        <audio id="audioNew" src="40-Hz-main/src/audio/new.ogg" preload="auto"></audio>
 
     <main>
         <nav>
@@ -78,14 +78,14 @@
             let bellTimeout;
             let bellCount = 1;
              const audioIcon = document.getElementById('audioIcon');
-        const audio = document.getElementById('audio');
+        const audioNew = document.getElementById('audioNew');
         let isPlaying = false;
 
         audioIcon.addEventListener('click', () => {
             if (isPlaying) {
-                audio.pause();
+                audioNew.pause();
             } else {
-                audio.play();
+                audioNew.play();
             }
             isPlaying = !isPlaying;
         });
