@@ -33,6 +33,14 @@
             width: auto;
             text-decoration: underline;
         }
+        #audioIcon {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            height: 50px;
+            width: 50px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -42,6 +50,9 @@
             40 Hertz
         </h1>
     </header>
+        <img id="audioIcon" src="new.jpeg" alt="Audio Icon">
+        <audio id="audio" src="new.ogg" preload="auto"></audio>
+
     <main>
         <nav>
             <div class="bell" id="bellIcon">
@@ -66,7 +77,18 @@
             let bellInterval;
             let bellTimeout;
             let bellCount = 1;
+             const audioIcon = document.getElementById('audioIcon');
+        const audio = document.getElementById('audio');
+        let isPlaying = false;
 
+        audioIcon.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+            } else {
+                audio.play();
+            }
+            isPlaying = !isPlaying;
+        });
             playButton.addEventListener('click', () => {
                 if (isPlaying) {
                     audio.pause();
