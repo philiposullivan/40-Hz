@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>40 Hz Brainwave and else</title>
-    <link rel="icon" type="image/png" href="40-Hz-main/src/img/icon.png" sizes="32x32">
+    <link rel="icon" type="40-Hz-main/src/image/png" href="40-Hz-main/src/img/icon.png" sizes="32x32">
     <link rel="stylesheet" href="40-Hz-main/src/css/styles.css">
     <style>
         .footer {
             position: fixed;
             bottom: 0;
+            width: min-content;
+            right: 0;
+            border-radius: 10px;
+            padding: 5px; 
             width: 100%;
             background-color: #333;
             color: white;
@@ -29,15 +33,12 @@
             width: auto;
             text-decoration: underline;
         }
-        .audio-control {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .audio-control img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
+        #audioIcon {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            height: 50px;
+            width: 50px;
             cursor: pointer;
         }
     </style>
@@ -45,10 +46,14 @@
 <body>
     <header>
         <h1 style="font-family: 'Merriweather Sans', Tahoma">
-            <img class="hereo" src="40-Hz-main/src/img/logo_256_white.png" alt="Logo" height="35" width="35">
+            <img class="hereo" src="40-Hz-main/src/img/logo_256_white.png" alt="Logo" height="35px" width="35px">
             40 Hertz
         </h1>
     </header>
+
+    <!-- Audio icon for secondary audio -->
+    <img id="audioIcon" src="40-Hz-main/src/img/icon.jpg" alt="Audio Icon">
+    <audio id="audioNew" src="40-Hz-main/src/audio/new.ogg" preload="auto"></audio>
 
     <main>
         <nav>
@@ -56,95 +61,93 @@
                 <img src="40-Hz-main/src/img/icon_bell.png" alt="Bell Icon" id="bell">
                 <span id="bellCounter">1</span>
             </div>
-            <div class="audio-control">
-                <img src="40-Hz-main/src/img/icon_play.png" alt="Play Icon" id="playPauseIcon1" class="play-pause-icon">
-                <span>40 Hz Audio</span>
-            </div>
-            <div class="audio-control">
-                <img src="40-Hz-main/src/img/icon_play.png" alt="Play Icon" id="playPauseIcon2" class="play-pause-icon">
-                <span>New Audio</span>
-            </div>
+            <!-- Play Pause Button -->
+            <button id="playButton"><img src="40-Hz-main/src/img/icon_play.png" alt="Play Icon" id="playPauseIcon"></button>
         </nav>
     </main>
-    <audio id="audio1" src="40-Hz-main/src/audio/9a.ogg" preload="auto"></audio>
-    <audio id="audio2" src="40-Hz-main/src/audio/new.ogg" preload="auto"></audio>
+
+    <!-- Primary audio and bell sound -->
+    <audio id="audio" src="40-Hz-main/src/audio/9a.ogg" preload="auto"></audio>
     <audio id="bellSound" src="40-Hz-main/src/audio/bell.ogg" preload="auto"></audio>
+
     <div class="footer">
         <a href="https://github.com/philiposullivan/40-Hz.git" id="sourceLink">Source</a>
     </div>
+
     <script>
         window.addEventListener('load', () => {
-            const playPauseIcon1 = document.getElementById('playPauseIcon1');
-            const playPauseIcon2 = document.getElementById('playPauseIcon2');
-            const audio1 = document.getElementById('audio1');
-            const audio2 = document.getElementById('audio2');
+            // Primary audio control
+            const playButton = document.getElementById('playButton');
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const audio = document.getElementById('audio');
             const bellSound = document.getElementById('bellSound');
-            let isPlaying1 = false;
-            let isPlaying2 = false;
+            let isAudioPlaying = false;
             let bellInterval;
+            let bellTimeout;
             let bellCount = 1;
 
-            function toggleAudio(audio, icon, otherAudio, otherIcon) {
-                if (audio.paused) {
-                    otherAudio.pause();
-                    otherIcon.src = '40-Hz-main/src/img/icon_play.png';
-                    audio.play();
-                    icon.src = '40-Hz-main/src/img/download.png';
+            // Secondary audio control
+            const audioIcon = document.getElementById('audioIcon');
+            const audioNew = document.getElementById('audioNew');
+            let isAudioNewPlaying = false;
+
+            // Handle secondary audio (icon-based control)
+            audioIcon.addEventListener('click', () => {
+                if (isAudioNewPlaying) {
+                    audioNew.pause();
                 } else {
+                    audioNew.play();
+                }
+                isAudioNewPlaying = !isAudioNewPlaying;
+            });
+
+            // Handle primary audio (play/pause button control)
+            playButton.addEventListener('click', () => {
+                if (isAudioPlaying) {
                     audio.pause();
-                    icon.src = '40-Hz-main/src/img/icon_play.png';
+                    bellSound.pause();
+                    playPauseIcon.src = '40-Hz-main/src/img/icon_play.png'; // Corrected icon path
+                    if (bellInterval) {
+                        clearInterval(bellInterval);
+                        clearTimeout(bellTimeout);
+                        bellInterval = null;
+                    }
+                } else {
+                    audio.currentTime = 5;
+                    audio.play();
+                    playPauseIcon.src = '40-Hz-main/src/img/icon_pause.png'; // Toggle to pause icon
                 }
-            }
-
-            playPauseIcon1.addEventListener('click', () => {
-                toggleAudio(audio1, playPauseIcon1, audio2, playPauseIcon2);
-                isPlaying1 = !audio1.paused;
-                isPlaying2 = false;
+                isAudioPlaying = !isAudioPlaying;
             });
 
-            playPauseIcon2.addEventListener('click', () => {
-                toggleAudio(audio2, playPauseIcon2, audio1, playPauseIcon1);
-                isPlaying2 = !audio2.paused;
-                isPlaying1 = false;
-            });
-
-            audio1.addEventListener('timeupdate', () => {
-                if (audio1.currentTime >= 20) {
-                    audio1.currentTime = 5;
+            // Loop the primary audio from 5 to 20 seconds
+            audio.addEventListener('timeupdate', () => {
+                if (audio.currentTime >= 20) {
+                    audio.currentTime = 5;
                 }
             });
 
-            audio1.loop = true;
+            audio.loop = true;
 
+            // Bell control
             const bellIcon = document.getElementById('bellIcon');
             const bellCounter = document.getElementById('bellCounter');
 
-            function ringBell() {
-                bellSound.currentTime = 0;
-                bellSound.play();
-            }
-
-            function setBellInterval() {
+            bellIcon.addEventListener('click', () => {
                 if (bellInterval) {
                     clearInterval(bellInterval);
-                }
-                bellInterval = setInterval(ringBell, bellCount * 60 * 1000);
-            }
-
-            bellIcon.addEventListener('click', () => {
-                ringBell(); // Ring the bell immediately when clicked
-
-                // Update bell count
-                if (bellCount === 1) {
-                    bellCount = 5;
-                } else if (bellCount === 5) {
-                    bellCount = 10;
+                    bellCount = bellCount === 1 ? 5 : bellCount === 5 ? 10 : 1;
                 } else {
-                    bellCount = 1;
+                    bellSound.currentTime = 0;
+                    bellSound.play();
                 }
 
                 bellCounter.textContent = bellCount;
-                setBellInterval();
+
+                bellInterval = setInterval(() => {
+                    bellSound.currentTime = 0;
+                    bellSound.play();
+                }, bellCount * 60 * 1000); // Interval based on bellCount
             });
         });
     </script>
