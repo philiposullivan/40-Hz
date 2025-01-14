@@ -7,70 +7,158 @@ body {
     align-items: center;
     justify-content: space-between;
     height: 100vh;
-}
-
-header {
+    font-family: 'Merriweather Sans', Tahoma, sans-serif;
+    overflow: hidden; /* Prevent scrollbars caused by absolute position */
+  }
+  
+  header {
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+  }
+  
+  h1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #eee;
+      font-size: 2em;
+      line-height: 2.1em;
+      letter-spacing: 2px;
+  }
+  
+  .hereo {
+      margin-right: 10px;
+  }
+  
+  main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+  
+  nav .bell {
+      cursor: pointer;
+      position: relative;
+  }
+  
+  nav .bell span {
+      position: absolute;
+      bottom: -10px;
+      right: 50%;
+      transform: translateX(50%);
+      background: black;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+  }
+  
+  #playButton {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+  }
+  
+  #playButton img {
+      height: 50px;
+      width: 50px;
+  }
+  
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: min-content;
+    right: 0;
+    border-radius: 10px;
+    padding: 5px; 
     width: 100%;
-    text-align: center;
-    margin-top: 20px;
-}
-
-h1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #eee;
-    font-size: 2em;
-    line-height: 2.1em;
-    letter-spacing: 2px;
-}
-
-.hereo {
-    margin-right: 10px;
-}
-
-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-nav .bell {
-    cursor: pointer;
-    position: relative;
-}
-
-nav .bell span {
-    position: absolute;
-    bottom: -10px;
-    right: 50%;
-    transform: translateX(50%);
-    background: black;
+    background-color: #333;
     color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
+    text-align: center;
+    padding: 10px 0;
 }
-
-#playButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+.footer a {
+    color: white;
+    text-decoration: none;
+    padding: 0 5px;
+    transition: width 0.3s;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
 }
-
-#playButton img {
+.footer a:hover {
+    width: auto;
+    text-decoration: underline;
+}
+#audioIcon {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
     height: 50px;
     width: 50px;
+    cursor: pointer;
 }
+  
+  /* SVG Curve Styles */
+  
+  .curveWrap {
+    opacity: 1;
+    width: 150vw;
+    height: 100vh;
+    position: absolute;
+    transform: translateX(-30vw) rotate(0deg);
+    will-change: transform;
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: -1;  /* Ensures the curves are behind other content */
+    top: 0; /* to cover the screen */
+    left: 0;
+  }
+  .curve {
+    stroke-linecap: round;
+    stroke-opacity: 0;
+    path {
+      transform-origin: center;
+    }
+  }
+  
+    /* Path Widths (random + minimum) */
+    .curve path:nth-child(1) {
+      stroke-width: 22;
+      animation: curve 35s linear 1.6s infinite;
+        stroke: goldenrod;
+    }
+        .curve path:nth-child(2) {
+        stroke-width: 33;
+          animation: curve 35s linear 3.2s infinite;
+          stroke: cornflowerBlue;
+    }
+        .curve path:nth-child(3) {
+        stroke-width: 25;
+           animation: curve 35s linear 4.8s infinite;
+          stroke: GreenYellow;
+    }
+      .curve path:nth-child(4) {
+        stroke-width: 40;
+           animation: curve 35s linear 6.4s infinite;
+          stroke: lightblue;
+    }
+  
+  @keyframes curve {
+    50% {
+      transform: rotateX(360deg) scaley(1) skewY(8deg);
+      stroke-opacity: 1;
+    }
+  }
