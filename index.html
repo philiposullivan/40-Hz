@@ -37,10 +37,26 @@
                 <img src="40-Hz-main/src/img/icon_bell.png" alt="Bell Icon" id="bell">
                 <span id="bellCounter">1</span>
             </div>
+            <!-- Add this before the play button in the main section -->
+            <div class="frequency-selector glass-panel">
+                <label for="frequencySlider">Frequency: <span id="frequencyValue">40 Hz</span></label>
+                <input type="range" id="frequencySlider" min="20" max="100" step="1" value="40">
+                <div class="preset-buttons">
+                    <button class="preset" data-freq="40">40 Hz</button>
+                    <button class="preset" data-freq="60">60 Hz</button>
+                    <button class="preset" data-freq="80">80 Hz</button>
+                </div>
+            </div>
             <!-- Play Pause Button -->
             <button id="playButton"><img src="40-Hz-main/src/img/icon_play.png" alt="Play Icon" id="playPauseIcon"></button>
         </nav>
+        <!-- Add this before the main closing tag -->
+    <div class="visualizer-container">
+      <canvas id="audioVisualizer" width="300" height="60"></canvas>
+    </div> 
     </main>
+
+   
 
     <!-- Primary audio and bell sound -->
     <audio id="audio" src="40-Hz-main/src/audio/9a.ogg" preload="auto"></audio>
@@ -51,13 +67,16 @@
     </div>
 
     <script>
+        // Add at the beginning of your script section
+        let isAudioPlaying = false; // Global variable
+
         window.addEventListener('load', () => {
             // Primary audio control
             const playButton = document.getElementById('playButton');
             const playPauseIcon = document.getElementById('playPauseIcon');
             const audio = document.getElementById('audio');
             const bellSound = document.getElementById('bellSound');
-            let isAudioPlaying = false;
+            // Remove the local declaration of isAudioPlaying
             let bellInterval;
             let bellTimeout;
             let bellCount = 1;
@@ -126,6 +145,153 @@
                 }, bellCount * 60 * 1000); // Interval based on bellCount
             });
         });
+
+        // Add this to your existing script
+        const visualizerCanvas = document.getElementById('audioVisualizer');
+        const visualCtx = visualizerCanvas.getContext('2d');
+        let audioContext;
+        let analyser;
+        let dataArray;
+
+        function initializeVisualizer() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            }
+            
+            function drawVisualizer() {
+                if (!isAudioPlaying) return; // Error occurs here - can't access the variable
+                
+                requestAnimationFrame(drawVisualizer);
+                analyser.getByteFrequencyData(dataArray);
+                
+                visualCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                visualCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                visualCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                
+                const barWidth = (visualizerCanvas.width / dataArray.length) * 2.5;
+                let barHeight;
+                let x = 0;
+                
+                for (let i = 0; i < dataArray.length; i++) {
+                    barHeight = dataArray[i] / 2;
+                    
+                    const gradient = visualCtx.createLinearGradient(0, 0, 0, visualizerCanvas.height);
+                    gradient.addColorStop(0, 'rgba(173, 216, 230, 0.8)');
+                    gradient.addColorStop(1, 'rgba(70, 130, 180, 0.4)');
+                    
+                    visualCtx.fillStyle = gradient;
+                    visualCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
+                    
+                    x += barWidth + 1;
+                }
+            }
+            
+            playButton.addEventListener('click', function() {
+                if (isAudioPlaying && !audioContext) {
+                    drawVisualizer();
+                }
+            });
+        }
+
+        window.addEventListener('load', initializeVisualizer);
+
+        // Add this to your existing script
+        const frequencySlider = document.getElementById('frequencySlider');
+        const frequencyValue = document.getElementById('frequencyValue');
+        let oscillator = null;
+
+        function setupFrequencyControl() {
+            frequencySlider.addEventListener('input', updateFrequency);
+            
+            document.querySelectorAll('.preset').forEach(button => {
+                button.addEventListener('click', () => {
+                    const freq = button.getAttribute('data-freq');
+                    frequencySlider.value = freq;
+                    updateFrequency();
+                });
+            });
+        }
+
+        function updateFrequency() {
+            const frequency = frequencySlider.value;
+            frequencyValue.textContent = frequency + ' Hz';
+            
+            // If using Web Audio API for tone generation
+            if (oscillator && audioContext) {
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            } else {
+                // If using audio file, we might need to switch audio files or regenerate tones
+                console.log("Frequency changed to " + frequency + "Hz");
+                // Implementation would depend on how the tones are generated
+            }
+        }
+
+        window.addEventListener('load', setupFrequencyControl);
+
+        // Add this to your existing script
+        let timer;
+        let sessionMinutes = 20;
+        let timeRemaining = sessionMinutes * 60;
+        const minutesDisplay = document.getElementById('minutes');
+        const secondsDisplay = document.getElementById('seconds');
+
+        function setupTimer() {
+            document.querySelectorAll('.timer-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    sessionMinutes = parseInt(button.getAttribute('data-time'));
+                    timeRemaining = sessionMinutes * 60;
+                    updateTimerDisplay();
+                });
+            });
+            
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            
+            minutesDisplay.textContent = minutes.toString().padStart(2, '0');
+            secondsDisplay.textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            
+            timer = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    audio.pause();
+                    isAudioPlaying = false;
+                    playPauseIcon.src = '40-Hz-main/src/img/icon_play.png';
+                    // Play a completion sound
+                    bellSound.play();
+                    timeRemaining = sessionMinutes * 60;
+                } else {
+                    timeRemaining--;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        playButton.addEventListener('click', () => {
+            // Add to your existing click handler
+            if (isAudioPlaying) {
+                if (timer) clearInterval(timer);
+            } else {
+                startTimer();
+            }
+        });
+
+        window.addEventListener('load', setupTimer);
     </script>
 </body>
 </html>
