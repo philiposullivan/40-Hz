@@ -63,13 +63,22 @@ body {
   }
   
   #playButton {
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      padding: 15px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-top: 20px;
+  }
+  
+  #playButton:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
   }
   
   #playButton img {
@@ -162,3 +171,124 @@ body {
       stroke-opacity: 1;
     }
   }
+
+/* Glassmorphism UI Elements */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 25px;
+}
+
+/* Add these styles */
+.visualizer-container {
+  width: 300px;
+  height: 60px;
+  margin: 20px auto;
+}
+
+#audioVisualizer {
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Add these styles */
+.frequency-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 300px;
+}
+
+.frequency-selector label {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 1.1em;
+}
+
+#frequencySlider {
+  width: 80%;
+  height: 8px;
+  -webkit-appearance: none;
+  background: linear-gradient(to right, #4a4a4a, #c7c7c7);
+  border-radius: 10px;
+  outline: none;
+  margin: 10px 0;
+}
+
+#frequencySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preset {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Add these styles */
+.timer-control {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.timer-display {
+  font-size: 2.5em;
+  color: white;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.timer-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timer-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timer-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
